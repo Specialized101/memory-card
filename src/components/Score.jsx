@@ -1,10 +1,11 @@
+import '../styles/Score.css'
 
 export default function Score({ title, value }) {
   return (
     <>
       <div className="score">
-        <span className="score-title">{title} : </span>
-        <span className="score-value">{value}</span>
+        <div className="score-title">{title + ' :'}</div>
+        <div className="score-value">{value}</div>
       </div>
     </>
   )

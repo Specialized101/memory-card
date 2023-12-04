@@ -1,16 +1,8 @@
 
 
-const generateRandomIds =  (length) =>  {
-  const ids = new Set()
-
-  while (ids.size < length) {
-    const randomNumber = Math.floor(Math.random() * 151) + 1
-
-    if (!ids.has(randomNumber)) {
-      ids.add(randomNumber)
-    }
-  }
-  return ids
+const range =  (length) =>  {
+  const arr = [...Array(length).keys()].map(x => x + 1)
+  return arr
 }
 
 const shuffleArray = (array) => {
@@ -24,4 +16,4 @@ const shuffleArray = (array) => {
   return shuffledArr
 }
 
-export { generateRandomIds, shuffleArray }
+export { range, shuffleArray }

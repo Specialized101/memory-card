@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react'
-import { generateRandomIds, shuffleArray } from './utils/helper.js'
+import { range, shuffleArray } from './utils/helper.js'
 import Board from './components/Board.jsx'
 import Score from './components/Score.jsx'
 import './App.css'
+import Loading from './components/Loading.jsx'
 
 const BASE_URL = 'https://pokeapi.co/api/v2/pokemon/'
-const pokemonsIds = Array.from(generateRandomIds(20))
+const pokemonsIds = shuffleArray(range(151))
 
 function App() {
   const [pokemonList, setPokemonList] = useState([])
   const [currentScore, setCurrentScore] = useState(0)
-  const  [maxScore, setMaxScore] = useState(0)
+  const [maxScore, setMaxScore] = useState(0)
+  const [isDoneFetching, setIsDoneFetching] = useState(false)
 
   // Initial fetch
   useEffect(() => {
@@ -18,7 +20,7 @@ function App() {
     let ignore = false
 
     const fetchData = async () => {
-      for (let i = 0; i < pokemonsIds.length; i++){ 
+      for (let i = 0; i < pokemonsIds.length; i++) {
         const url = BASE_URL + pokemonsIds[i]
         const response = await fetch(url, { mode: 'cors' })
         const json = await response.json()
@@ -32,6 +34,7 @@ function App() {
         }
       }
       setPokemonList(pokeData)
+      setIsDoneFetching(true)
     }
 
     fetchData()
@@ -49,8 +52,8 @@ function App() {
       if (currentScore > maxScore) {
         setMaxScore(currentScore)
       }
-    setCurrentScore(0)
-    resetPokeClick()
+      setCurrentScore(0)
+      resetPokeClick()
     }
 
     const shuffled = shuffleArray(pokemonList)
@@ -63,11 +66,19 @@ function App() {
 
   return (
     <>
-      <div className='scores'>
-        <Score title='Current score' value={currentScore}/>
-        <Score title='Highest score' value={maxScore}/>
-      </div>
-      <Board data={pokemonList} handleClick={handleClick}/>
+      {
+        !isDoneFetching ? (
+          <Loading />
+        ) : (
+          <>
+            <div className='scores'>
+              <Score title='Current score' value={currentScore} />
+              <Score title='Highest score' value={maxScore} />
+            </div>
+            <Board data={pokemonList} handleClick={handleClick} />
+          </>
+        )
+      }
     </>
   )
 }
